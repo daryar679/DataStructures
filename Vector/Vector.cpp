@@ -1,8 +1,6 @@
 ﻿#include "Vector.h"
 #include <cstdlib>
 #include <cassert>
-#include <iostream>
-using namespace std;
 
 MyVector::MyVector(size_t size, ResizeStrategy strategy, float coef)
 {
