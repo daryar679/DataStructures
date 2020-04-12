@@ -5,10 +5,6 @@ enum class ResizeStrategy {
 	Additive,
 	Multiplicative
 };
-enum class SortedStrategy {
-	Increase,
-    Decrease
-};
 
 // тип значений в векторе
 // потом будет заменен на шаблон
