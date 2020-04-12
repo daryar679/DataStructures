@@ -1,9 +1,13 @@
-#pragma once
+# pragma once
 
 // стратегия изменения capacity
 enum class ResizeStrategy {
 	Additive,
 	Multiplicative
+};
+enum class SortedStrategy {
+	Increase,
+    Decrease
 };
 
 // тип значений в векторе
@@ -15,9 +19,9 @@ class MyVector
 public:
 	MyVector(size_t size = 0, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f);
 	MyVector(size_t size, ValueType value, ResizeStrategy = ResizeStrategy::Multiplicative, float coef = 1.5f);
-	
+
 	MyVector(const MyVector& copy);
-	MyVector& operator=(const MyVector& copy);
+	MyVector& operator= (const MyVector& copy);
 
 	~MyVector();
 
@@ -51,7 +55,7 @@ public:
 	// должен работать за O(n)
 	// если isBegin == true, найти индекс первого элемента, равного value, иначе последнего
 	// если искомого элемента нет, вернуть -1
-	long long int find(const ValueType& value, bool isBegin = true) const;	
+	long long int find(const ValueType& value, bool isBegin = true) const;
 
 	// зарезервировать память (принудительно задать capacity)
 	void reserve(const size_t capacity);
@@ -63,9 +67,22 @@ public:
 
 	// очистка вектора, без изменения capacity
 	void clear();
+
+	class Iterator
+	{
+		public:
+			Iterator(ValueType* p) : ptr(p) {};
+		private:
+			ValueType* ptr;
+	};
+	Iterator begin() { return this->_data; };
+	Iterator end() { return this->_data + this->_size; };
+
 private:
 	ValueType* _data;
 	size_t _size;
 	size_t _capacity;
+	ResizeStrategy _strategy;
+	float _coef;
 };
 
