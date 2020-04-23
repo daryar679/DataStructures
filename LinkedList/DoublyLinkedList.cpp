@@ -25,8 +25,8 @@ void DoublyLinkedList::Node::removeNext()
 	Node* removeNode = this->next;
 	Node* newNext = removeNode->next;
 	delete removeNode;
-	newNext->prev = this;
 	this->next = newNext;
+	newNext->prev = this;
 }
 
 DoublyLinkedList::DoublyLinkedList()
@@ -50,8 +50,8 @@ DoublyLinkedList::DoublyLinkedList(const DoublyLinkedList& copyList)
 	Node* currentCopyNode = copyList._head;
 
 	while (currentCopyNode->next) {
-		currentNode->next = new Node(currentCopyNode->value);
 		currentCopyNode = currentCopyNode->next;
+		currentNode->next = new Node(currentCopyNode->value);
 		currentNode = currentNode->next;
 	}
 	this->_tail = currentNode;
@@ -159,6 +159,7 @@ void DoublyLinkedList::insertAfterNode(Node* node, const ValueType& value)
 		return;
 	}
 	node->insertNext(value);
+	++_size;
 }
 
 void DoublyLinkedList::pushBack(const ValueType& value)
