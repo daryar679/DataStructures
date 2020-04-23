@@ -23,7 +23,7 @@ void LinkedList::Node::removeNext()
 {
 	Node* removeNode = this->next;
 	Node* newNext = removeNode->next;
-	delete removeNode; 
+	delete removeNode;
 	this->next = newNext;
 }
 
@@ -47,8 +47,8 @@ LinkedList::LinkedList(const LinkedList& copyList)
 	Node* currentCopyNode = copyList._head;
 
 	while (currentCopyNode->next) {
-		currentNode->next = new Node(currentCopyNode->value);
 		currentCopyNode = currentCopyNode->next;
+		currentNode->next = new Node(currentCopyNode->value);
 		currentNode = currentNode->next;
 	}
 }
@@ -130,7 +130,7 @@ void LinkedList::insert(const size_t pos, const ValueType& value)
 	}
 	else {
 		Node* bufNode = this->_head;
-		for (size_t i = 0; i < pos-1; ++i) {
+		for (size_t i = 0; i < pos - 1; ++i) {
 			bufNode = bufNode->next;
 		}
 		bufNode->insertNext(value);
@@ -141,6 +141,7 @@ void LinkedList::insert(const size_t pos, const ValueType& value)
 void LinkedList::insertAfterNode(Node* node, const ValueType& value)
 {
 	node->insertNext(value);
+	++_size;
 }
 
 void LinkedList::pushBack(const ValueType& value)
@@ -172,6 +173,7 @@ void LinkedList::remove(const size_t pos)
 		Node* bufNode = _head;
 		_head = _head->next;
 		delete bufNode;
+		_size--;
 	}
 	else
 	{
@@ -182,8 +184,8 @@ void LinkedList::remove(const size_t pos)
 		Node* deleteNode = bufNode->next;
 		bufNode->next = deleteNode->next;
 		delete deleteNode;
+		_size--;
 	}
-	_size--;
 }
 
 void LinkedList::removeNextNode(Node* node)
@@ -275,11 +277,11 @@ LinkedList LinkedList::getReverseList() const
 		prev = bufNode;
 		bufNode = next;
 	}
-	LinkedList* newList = new LinkedList();
-	newList->_head = prev;
-	newList->_size = _size;
+	LinkedList newList;
+	newList._head = prev;
+	newList._size = _size;
 
-	return *newList;
+	return newList;
 }
 
 size_t LinkedList::size() const
@@ -296,8 +298,4 @@ void LinkedList::forceNodeDelete(Node* node)
 	Node* nextDeleteNode = node->next;
 	delete node;
 	forceNodeDelete(nextDeleteNode);
-}
-int main()
-{
-	return 0;
 }
