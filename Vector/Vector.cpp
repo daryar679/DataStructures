@@ -1,6 +1,8 @@
 ﻿#include "Vector.h"
 #include <cstdlib>
 #include <cassert>
+#include <iostream>
+using namespace std;
 
 MyVector::MyVector(size_t size, ResizeStrategy strategy, float coef)
 {
@@ -53,6 +55,7 @@ MyVector& MyVector::operator=(const MyVector& copy)
 	}
 
 	MyVector bufVector(copy);
+	delete[] _data;
 	this->_data = new ValueType[bufVector._capacity];
 	for (size_t i = 0; i < bufVector._size; i++)
 	{
@@ -88,7 +91,7 @@ float MyVector::loadFactor()
 
 ValueType& MyVector::operator[](const size_t i) const
 {
-	if (i < 0 || i >= this->_size)
+	if (i < 0 || i > this->_size)
 		assert(i < 0 || i >= this->_size);
 	return _data[i];
 }
@@ -97,6 +100,7 @@ void MyVector::reserve(const size_t capacity)
 {
 	MyVector vec(*this);
 	_capacity = capacity;
+	delete[]_data;
 	this->_data = new ValueType[capacity];
 	for (size_t i = 0; i < this->_size; i++)
 	{
@@ -115,14 +119,13 @@ void MyVector::pushBack(const ValueType& value)
 	{
 		if (_strategy == ResizeStrategy::Multiplicative)
 		{
-			while(loadFactor() > 1/(_coef * _coef))
-				this->reserve(_capacity * _coef);
+				reserve(_capacity * _coef);
 		}
 
 		else if (_strategy == ResizeStrategy::Additive)
 		{
-			while(_size >= _capacity)
-				this->reserve(_capacity + _coef);
+			while (_size >= _capacity)
+				reserve(_capacity + _coef);
 		}
 		
 		this->_size++;
@@ -149,27 +152,20 @@ void MyVector::insert(const size_t i, const ValueType& value)
 		{
 			if (_strategy == ResizeStrategy::Multiplicative)
 			{
-				while (loadFactor() > 1 / (_coef * _coef))
-					this->reserve(_capacity * _coef);
+					reserve(_capacity * _coef);
 			}
 
 			else if (_strategy == ResizeStrategy::Additive)
 			{
 				while (_size >= _capacity)
-					this->reserve(_capacity + _coef);
+					reserve(_capacity + _coef);
 			}
 		}
-		MyVector vec(*this);
-		this->_data = new ValueType[_size + 1];
-		for (size_t k = 0; k < i; k++)
+		for (size_t k = _size; k > i; k--)
 		{
-			this->_data[k] = vec._data[k];
+			this->_data[k] = this->_data[k-1];
 		}
 		this->_data[i] = value;
-		for (size_t k = i + 1; k < _size + 1; k++)
-		{
-			this->_data[k] = vec._data[k - 1];
-		}
 		++_size;
 	}
 }
@@ -184,33 +180,26 @@ void MyVector::insert(const size_t i, const MyVector& value)
 	}
 	else
 	{
-		if (_size >= _capacity)
+		if ((_size+value._size) >= _capacity)
 		{
 			if (_strategy == ResizeStrategy::Multiplicative)
 			{
-				while (loadFactor() > 1 / (_coef * _coef))
-					this->reserve(_capacity * _coef);
+					reserve(_capacity * _coef);
 			}
 
 			else if (_strategy == ResizeStrategy::Additive)
 			{
-				while (_size >= _capacity)
-					this->reserve(_capacity + _coef);
+				while ((_size+value._size) >= _capacity)
+					reserve(_capacity + _coef);
 			}
 		}
-		MyVector vec(*this);
-		this->_data = new ValueType[_size + value._size+1];
-		for (size_t k = 0; k < i; k++)
+		for (size_t k = _size + value._size; k > i + value._size; k--)
 		{
-			this->_data[k] = vec._data[k];
+			this->_data[k] = this->_data[k - value._size];
 		}
 		for (size_t k = i; k < i + value._size; k++)
 		{
 			this->_data[k] = value._data[k - i];
-		}
-		for (size_t k = i + value._size; k < _size + value._size + 1; k++)
-		{
-			this->_data[k] = vec._data[k - value._size];
 		}
 		_size+= value._size;
 	}
@@ -218,14 +207,9 @@ void MyVector::insert(const size_t i, const MyVector& value)
 
 void MyVector::popBack()
 {
-	//if (this->_data = nullptr)
-	//	assert(this->_data = nullptr);
-	MyVector vec(*this);
-	this->_data = new ValueType[_size - 1];
-	for (size_t i = 0; i < _size - 1; i++)
-	{
-		this->_data[i] = vec._data[i];
-	}
+	if (this->_data = nullptr)
+		return;
+	
 	--_size;
 }
 
@@ -245,15 +229,9 @@ void MyVector::erase(const size_t i)
 
 	else
 	{
-		MyVector vec(*this);
-		this->_data = new ValueType[_size - 1];
-		for (size_t k = 0; k < i; k++)
-		{
-			this->_data[k] = vec._data[k];
-		}
 		for (size_t k = i; k < _size - 1; k++)
 		{
-			this->_data[k] = vec._data[k + 1];
+			this->_data[k] = this->_data[k + 1];
 		}
 		--_size;
 	}
@@ -269,15 +247,9 @@ void MyVector::erase(const size_t i, const size_t len)
 	}
 	else
 	{
-		MyVector vec(*this);
-		this->_data = new ValueType[_size - len];
-		for (size_t k = 0; k < i; k++)
-		{
-			this->_data[k] = vec._data[k];
-		}
 		for (size_t k = i; k < _size - len; k++)
 		{
-			this->_data[k] = vec._data[k + len];
+			this->_data[k] = this->_data[k + len];
 		}
 		_size -= len;
 	}
@@ -314,6 +286,7 @@ void MyVector::resize(const size_t size, const ValueType value)
 	if (size > this->_size)
 	{
 		MyVector vec(*this);
+		delete[]_data;
 		this->_data = new ValueType[size];
 		for (size_t i = 0; i < vec._size; i++)
 		{
@@ -328,6 +301,7 @@ void MyVector::resize(const size_t size, const ValueType value)
 	else if (size < this->_size)
 	{
 		MyVector vec(*this);
+		delete[]_data;
 		this->_data = new ValueType[size];
 		for (size_t i = 0; i < size; i++)
 		{
