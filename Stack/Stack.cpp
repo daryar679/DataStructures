@@ -78,10 +78,7 @@ Stack& Stack::operator=(const Stack& copyStack)
 	}
 
 	this->_containerType = copyStack._containerType;
-	if (_pimpl != nullptr)
-	{
-		delete _pimpl;
-	}
+	delete _pimpl;
 	switch (_containerType)
 	{
 	case StackContainer::List: {
@@ -95,6 +92,30 @@ Stack& Stack::operator=(const Stack& copyStack)
 	default:
 		throw std::runtime_error("Неизвестный тип контейнера");
 	}
+
+	return *this;
+}
+
+Stack::Stack(Stack&& moveStack) noexcept
+{
+	this->_containerType = moveStack._containerType;
+	delete _pimpl;
+	this->_pimpl = moveStack._pimpl;
+	moveStack._pimpl = nullptr;
+
+}
+
+Stack& Stack::operator=(Stack&& moveStack) noexcept
+{
+	if (this == &moveStack)
+	{
+		return *this;
+	}
+
+	this->_containerType = moveStack._containerType;
+	delete _pimpl;
+	this->_pimpl = moveStack._pimpl;
+	moveStack._pimpl = nullptr;
 
 	return *this;
 }
