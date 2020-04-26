@@ -25,17 +25,72 @@ Stack::Stack(StackContainer container)
 
 Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer container)
 {
-	// принцип тот же, что и в прошлом конструкторе
+	_containerType = container;
+	switch (container)
+	{
+	case StackContainer::List: {
+		_pimpl = new ListStack();	
+		break;
+	}
+	case StackContainer::Vector: {
+		_pimpl = new VectorStack();	
+		break;
+	}
+	default:
+		throw std::runtime_error("Неизвестный тип контейнера");
+	}
+
+	for (size_t i = 0; i < arraySize; i++)
+	{
+		_pimpl->push(valueArray[i]);
+	}
 }
 
 Stack::Stack(const Stack& copyStack)
 {
-	// сами
+	this->_containerType = copyStack._containerType;
+	switch (_containerType)
+	{
+	case StackContainer::List: {
+		_pimpl = new ListStack(*(static_cast<ListStack*>(copyStack._pimpl)));
+		break;
+	}
+	case StackContainer::Vector: {
+		_pimpl = new VectorStack(*(static_cast<VectorStack*>(copyStack._pimpl)));
+		break;
+	}
+	default:
+		throw std::runtime_error("Неизвестный тип контейнера");
+	}
 }
 
 Stack& Stack::operator=(const Stack& copyStack)
 {
-	// TODO: вставьте здесь оператор return
+	if (this == &copyStack)
+	{
+		return *this;
+	}
+
+	this->_containerType = copyStack._containerType;
+	if (_pimpl != nullptr)
+	{
+		delete _pimpl;
+	}
+	switch (_containerType)
+	{
+	case StackContainer::List: {
+		_pimpl = new ListStack(*(static_cast<ListStack*>(copyStack._pimpl)));
+		break;
+	}
+	case StackContainer::Vector: {
+		_pimpl = new VectorStack(*(static_cast<VectorStack*>(copyStack._pimpl)));
+		break;
+	}
+	default:
+		throw std::runtime_error("Неизвестный тип контейнера");
+	}
+	
+	return *this;
 }
 
 Stack::~Stack()
