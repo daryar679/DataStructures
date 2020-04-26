@@ -17,12 +17,12 @@ void ListStack::pop()
 
 ValueType& ListStack::top()
 {
-	return operator[](size() - 1);
+	return getNode(size() - 1)->value;
 }
 
 const ValueType& ListStack::top() const
 {
-	return operator[](size() - 1);
+	return getNode(size() - 1)->value;
 }
 
 bool ListStack::isEmpty() const
