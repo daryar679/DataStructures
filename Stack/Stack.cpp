@@ -2,8 +2,8 @@
 #include "ListStack.h"
 #include "VectorStack.h"
 #include "StackImplementation.h"
-
 #include <stdexcept>
+using namespace std;
 
 Stack::Stack(StackContainer container)
 	: _containerType(container)
@@ -64,6 +64,12 @@ Stack::Stack(const Stack& copyStack)
 	}
 }
 
+
+Stack::~Stack()
+{
+	delete _pimpl;		// композиция!
+}
+
 Stack& Stack::operator=(const Stack& copyStack)
 {
 	if (this == &copyStack)
@@ -89,13 +95,8 @@ Stack& Stack::operator=(const Stack& copyStack)
 	default:
 		throw std::runtime_error("Неизвестный тип контейнера");
 	}
-	
-	return *this;
-}
 
-Stack::~Stack()
-{
-	delete _pimpl;		// композиция!
+	return *this;
 }
 
 void Stack::push(const ValueType& value)
@@ -126,5 +127,5 @@ bool Stack::isEmpty() const
 
 size_t Stack::size() const
 {
-	return _pimpl->isEmpty();
+	return _pimpl->size();
 }
