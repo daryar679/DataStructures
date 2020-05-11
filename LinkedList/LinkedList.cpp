@@ -268,20 +268,8 @@ LinkedList LinkedList::reverse() const
 
 LinkedList LinkedList::getReverseList() const
 {
-	Node* bufNode = _head;
-	Node* next = nullptr;
-	Node* prev = nullptr;
-	while (bufNode != nullptr)
-	{
-		next = bufNode->next;
-		bufNode->next = prev;
-		prev = bufNode;
-		bufNode = next;
-	}
-	LinkedList newList;
-	newList._head = prev;
-	newList._size = _size;
-
+	LinkedList newList = *this;
+	newList.reverse();
 	return newList;
 }
 
