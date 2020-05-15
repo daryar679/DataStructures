@@ -207,7 +207,7 @@ void MyVector::insert(const size_t i, const MyVector& value)
 
 void MyVector::popBack()
 {
-	if (this->_data = nullptr)
+	if (this->_data == nullptr)
 		return;
 	
 	--_size;
