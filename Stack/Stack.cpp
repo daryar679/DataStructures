@@ -150,3 +150,7 @@ size_t Stack::size() const
 {
 	return _pimpl->size();
 }
+int main()
+{
+	return 0;
+}
