@@ -21,7 +21,7 @@ void LinkedList::Node::insertNext(const ValueType& value)
 
 void LinkedList::Node::removeNext()
 {
-	if (this->next == nullptr)
+	if ((this->next == nullptr)||(this->next->next==nullptr))
 	{
 		return;
 	}
@@ -260,8 +260,8 @@ void LinkedList::reverse()
 
 LinkedList LinkedList::reverse() const
 {
-	LinkedList newList = *this;
-	newList.getReverseList();
+	LinkedList newList(*this);
+	newList.reverse();
 	return newList;
 }
 
