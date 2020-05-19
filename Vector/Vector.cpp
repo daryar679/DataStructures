@@ -135,6 +135,7 @@ void MyVector::pushBack(const ValueType& value)
 		this->_size++;
 		this->_data[_size - 1] = value;
 	}
+	allocationOfCap();
 }
 
 void MyVector::insert(const size_t i, const ValueType& value)
@@ -166,6 +167,7 @@ void MyVector::insert(const size_t i, const ValueType& value)
 		this->_data[i] = value;
 		++_size;
 	}
+	allocationOfCap();
 }
 
 void MyVector::insert(const size_t i, const MyVector& value)
@@ -193,6 +195,7 @@ void MyVector::insert(const size_t i, const MyVector& value)
 			this->_data[k] = value._data[k - i];
 		}
 		_size += value._size;
+		allocationOfCap();
 }
 
 void MyVector::popBack()
@@ -200,6 +203,7 @@ void MyVector::popBack()
 	if (this->_data == nullptr)
 		return;
 	--_size;
+	allocationOfCap();
 }
 
 void MyVector::erase(const size_t i)
@@ -219,6 +223,7 @@ void MyVector::erase(const size_t i)
 		}
 		--_size;
 	}
+	allocationOfCap();
 }
 
 void MyVector::erase(const size_t i, const size_t len)
@@ -230,6 +235,7 @@ void MyVector::erase(const size_t i, const size_t len)
 			this->_data[k] = this->_data[k + len];
 		}
 		_size -= len;
+		allocationOfCap();
 }
 
 long long int MyVector::find(const ValueType& value, bool isBegin) const
@@ -291,6 +297,21 @@ void MyVector::resize(const size_t size, const ValueType value)
 	}
 }
 
+void MyVector::allocationOfCap()
+{
+	if (loadFactor() < (1 / (_coef * _coef)) || loadFactor() > 1)
+	{
+		if (_strategy == ResizeStrategy::Multiplicative)
+		{
+			this->reserve(_size * _coef);
+		}
+
+		else if (_strategy == ResizeStrategy::Additive)
+		{
+			this->reserve(_size + _coef);
+		}
+	}
+}
 
 void MyVector::clear()
 {
