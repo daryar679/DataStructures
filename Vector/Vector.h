@@ -63,11 +63,23 @@ public:
 
 	// очистка вектора, без изменения capacity
 	void clear();
-
+	void allocationOfCap();
 	class Iterator
 	{
 		public:
 			Iterator(ValueType* p) : ptr(p) {};
+			ValueType& operator*() { return *ptr; };
+			ValueType* operator->() { return ptr; };
+			Iterator operator++() { return ++ptr; };
+			Iterator operator++(int) { return ptr++; };
+			Iterator operator-(int a) { return ptr - a; };
+			Iterator operator+(int a) { return ptr + a; };
+			Iterator operator--(int) { return ptr--; };
+			Iterator operator--() { return --ptr; };
+			bool operator==(Iterator& b) { return ptr == b.ptr; };
+			bool operator!=(Iterator& b) { return ptr != b.ptr; };
+			bool operator<(Iterator& b) { return ptr < b.ptr; };
+			bool operator>(Iterator& b) { return ptr > b.ptr; };
 		private:
 			ValueType* ptr;
 	};
