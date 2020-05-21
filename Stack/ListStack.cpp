@@ -7,22 +7,22 @@ ListStack::ListStack(const ListStack& copyList):LinkedList(copyList)
 
 void ListStack::push(const ValueType& value)
 {
-	this->pushBack(value);
+	this->pushFront(value);
 }
 
 void ListStack::pop()
 {
-	this->removeBack();
+	this->removeFront();
 }
 
 ValueType& ListStack::top()
 {
-	return getNode(size() - 1)->value;
+	return getNode(0)->value;
 }
 
 const ValueType& ListStack::top() const
 {
-	return getNode(size() - 1)->value;
+	return getNode(0)->value;
 }
 
 bool ListStack::isEmpty() const
