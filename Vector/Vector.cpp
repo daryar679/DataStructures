@@ -321,3 +321,43 @@ void MyVector::clear()
 	}
 	_size = 0;
 }
+
+MyVector sortedSquares(MyVector& vec, SortedStrategy strategy)
+{
+	MyVector sort(vec);
+	size_t start = 0;
+	size_t finish = vec.size() - 1;
+	if (strategy == SortedStrategy::Decrease)
+	{
+		for(size_t i = 0; i < vec._size; i++)
+		{
+			if (abs(vec._data[start]) > abs(vec._data[finish]))
+			{
+				sort._data[i] = pow(vec._data[start], 2);
+				++start;
+			}
+			else
+			{
+				sort._data[i] = pow(vec._data[finish], 2);
+				--finish;
+			}
+		}
+	}
+	else
+	{
+		for (size_t i = vec._size-1; i > 0; i--)
+		{
+			if (abs(vec._data[start]) > abs(vec._data[finish]))
+			{
+				sort._data[i] = pow(vec._data[start], 2);
+				++start;
+			}
+			else
+			{
+				sort._data[i] = pow(vec._data[finish], 2);
+				--finish;
+			}
+		}
+	}
+	return sort;
+}
