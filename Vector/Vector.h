@@ -92,5 +92,6 @@ private:
 	size_t _capacity;
 	ResizeStrategy _strategy;
 	float _coef;
+	friend MyVector sortedSquares(MyVector& vec, SortedStrategy strategy);
 };
 
