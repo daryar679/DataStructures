@@ -124,7 +124,7 @@ void MyVector::pushBack(const ValueType& value)
 	{
 		if (_strategy == ResizeStrategy::Multiplicative)
 		{
-				this->reserve(_capacity * _coef);
+				this->reserve(_capacity * _coef *_coef);
 		}
 
 		else if (_strategy == ResizeStrategy::Additive)
@@ -152,7 +152,7 @@ void MyVector::insert(const size_t i, const ValueType& value)
 		{
 			if (_strategy == ResizeStrategy::Multiplicative)
 			{
-					this->reserve(_capacity * _coef);
+					this->reserve(_capacity * _coef *_coef);
 			}
 
 			else if (_strategy == ResizeStrategy::Additive)
