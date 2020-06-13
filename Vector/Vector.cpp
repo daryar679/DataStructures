@@ -20,6 +20,10 @@ MyVector::MyVector(size_t size, ResizeStrategy strategy, float coef)
 		_capacity = 1;
 
 	_data = new ValueType[_capacity];
+	for (size_t i = 0; i < size; i++)
+		{
+			_data[i] = 0;
+		}
 }
 
 MyVector::MyVector(size_t size, ValueType value, ResizeStrategy strategy, float coef)
@@ -301,14 +305,18 @@ void MyVector::allocationOfCap()
 {
 	if (loadFactor() < (1 / (_coef * _coef)) || loadFactor() > 1)
 	{
-		if (_strategy == ResizeStrategy::Multiplicative)
+		if ((_strategy == ResizeStrategy::Multiplicative) && (_size != 0))
 		{
 			this->reserve(_size * _coef);
 		}
 
-		else if (_strategy == ResizeStrategy::Additive)
+		else if ((_strategy == ResizeStrategy::Additive) && (_size != 0))
 		{
 			this->reserve(_size + _coef);
+		}
+		else if (_size == 0)
+		{
+			this->reserve(1);
 		}
 	}
 }
