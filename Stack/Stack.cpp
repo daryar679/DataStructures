@@ -3,6 +3,8 @@
 #include "VectorStack.h"
 #include "StackImplementation.h"
 #include <stdexcept>
+#include <cstdlib>
+#include <iostream>
 using namespace std;
 
 Stack::Stack(StackContainer container)
