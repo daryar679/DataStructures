@@ -74,7 +74,7 @@ private:
 	size_t _capacity;
 	ResizeStrategy _strategy;
 	float _coef;
-	friend MyVector sortedSquares(MyVector& vec, SortedStrategy strategy);
+	friend MyVector<ValueType> sortedSquares(MyVector& vec, SortedStrategy strategy);
 };
 
 template<typename ValueType>
@@ -185,7 +185,7 @@ ValueType& MyVector<ValueType>::operator[](const size_t i) const
 {
 	//assert((i >= 0) && (i < this->_size));
 	if ((i < 0) || (i > _size))
-		throw out_of_range("Invalid argument");
+		throw std::out_of_range("Invalid argument");
 	
 	return _data[i];
 }
@@ -234,7 +234,7 @@ void MyVector<ValueType>::insert(const size_t i, const ValueType& value)
 {
 	//assert((i >= 0) && (i < _size + 1));
 	if ((i < 0) || (i > _size))
-		throw out_of_range("Invalid argument");
+		throw std::out_of_range("Invalid argument");
 
 	if (i == _size)
 	{
@@ -269,7 +269,7 @@ void MyVector<ValueType>::insert(const size_t i, const MyVector& value)
 {
 	//assert((i >= 0) && (i <= _size));
 	if ((i < 0) || (i > _size))
-		throw out_of_range("Invalid argument");
+		throw std::out_of_range("Invalid argument");
 
 	if ((_size+value._size) >= _capacity)
 	{
@@ -299,7 +299,7 @@ template<typename ValueType>
 void MyVector<ValueType>::popBack()
 {
 	if (this->_size==0)
-		throw runtime_error("There is nothing to remove");
+		throw std::runtime_error("There is nothing to remove");
 	
 	--_size;
 	allocationOfCap();
@@ -310,7 +310,7 @@ void MyVector<ValueType>::erase(const size_t i)
 {
 	//assert((i >= 0) && (i <= _size));
 	if ((i < 0) || (i > _size))
-		throw out_of_range("Invalid argument");
+		throw std::out_of_range("Invalid argument");
 
 	if (i == _size)
 	{
@@ -333,7 +333,7 @@ void MyVector<ValueType>::erase(const size_t i, const size_t len)
 {
 	//assert((i >= 0) && (i <= _size));
 	if ((i < 0) || (i > _size))
-		throw out_of_range("Invalid argument");
+		throw std::out_of_range("Invalid argument");
 	
 	for (size_t k = i; k < _size - len; k++)
 	{
