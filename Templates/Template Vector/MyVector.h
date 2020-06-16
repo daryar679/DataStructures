@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iostream>
+#include <exception>
 
 enum class ResizeStrategy {
 	Additive,
@@ -44,7 +45,6 @@ public:
 	void resize(const size_t size, const ValueType = 0.0);
 	void allocationOfCap();
 	void clear();
-	//static MyVector sortedSquares(MyVector& vec, SortedStrategy strategy);
 
 	class Iterator
 	{
@@ -74,7 +74,7 @@ private:
 	size_t _capacity;
 	ResizeStrategy _strategy;
 	float _coef;
-	//friend MyVector sortedSquares(MyVector& vec, SortedStrategy strategy);
+	friend MyVector sortedSquares(MyVector& vec, SortedStrategy strategy);
 };
 
 template<typename ValueType>
@@ -183,7 +183,10 @@ float MyVector<ValueType>::loadFactor()
 template<typename ValueType>
 ValueType& MyVector<ValueType>::operator[](const size_t i) const
 {
-	assert((i >= 0) && (i < this->_size));
+	//assert((i >= 0) && (i < this->_size));
+	if ((i < 0) || (i > _size))
+		throw out_of_range("Invalid argument");
+	
 	return _data[i];
 }
 
@@ -212,12 +215,12 @@ void MyVector<ValueType>::pushBack(const ValueType& value)
 	{
 		if (_strategy == ResizeStrategy::Multiplicative)
 		{
-				this->reserve(_capacity * _coef *_coef);
+			this->reserve(_capacity * _coef *_coef);
 		}
 
 		else if (_strategy == ResizeStrategy::Additive)
 		{
-				this->reserve(_capacity + _coef);
+			this->reserve(_capacity + _coef);
 		}
 
 		this->_size++;
@@ -229,7 +232,9 @@ void MyVector<ValueType>::pushBack(const ValueType& value)
 template<typename ValueType>
 void MyVector<ValueType>::insert(const size_t i, const ValueType& value)
 {
-	assert((i >= 0) && (i < _size + 1));
+	//assert((i >= 0) && (i < _size + 1));
+	if ((i < 0) || (i > _size))
+		throw out_of_range("Invalid argument");
 
 	if (i == _size)
 	{
@@ -241,12 +246,12 @@ void MyVector<ValueType>::insert(const size_t i, const ValueType& value)
 		{
 			if (_strategy == ResizeStrategy::Multiplicative)
 			{
-					this->reserve(_capacity * _coef *_coef);
+				this->reserve(_capacity * _coef *_coef);
 			}
 
 			else if (_strategy == ResizeStrategy::Additive)
 			{
-					this->reserve(_capacity + _coef);
+				this->reserve(_capacity + _coef);
 			}
 		}
 		for (size_t k = _size; k > i; k--)
@@ -262,37 +267,40 @@ void MyVector<ValueType>::insert(const size_t i, const ValueType& value)
 template<typename ValueType>
 void MyVector<ValueType>::insert(const size_t i, const MyVector& value)
 {
-	assert((i >= 0) && (i <= _size));
+	//assert((i >= 0) && (i <= _size));
+	if ((i < 0) || (i > _size))
+		throw out_of_range("Invalid argument");
 
-		if ((_size+value._size) >= _capacity)
+	if ((_size+value._size) >= _capacity)
+	{
+		if (_strategy == ResizeStrategy::Multiplicative)
 		{
-			if (_strategy == ResizeStrategy::Multiplicative)
-			{
-					this->reserve((_size+value._size) * _coef);
-			}
+			this->reserve((_size+value._size) * _coef);
+		}
 
-			else if (_strategy == ResizeStrategy::Additive)
-			{
-					this->reserve(_size + value._size + _coef);
-			}
-		}
-		for (size_t k = _size + value._size; k > value._size; k--)
+		else if (_strategy == ResizeStrategy::Additive)
 		{
-			this->_data[k] = this->_data[k - value._size];
+			this->reserve(_size + value._size + _coef);
 		}
-		for (size_t k = i; k < i + value._size; k++)
-		{
-			this->_data[k] = value._data[k - i];
-		}
-		_size += value._size;
-		allocationOfCap();
+	}
+	for (size_t k = _size + value._size; k > value._size; k--)
+	{
+		this->_data[k] = this->_data[k - value._size];
+	}
+	for (size_t k = i; k < i + value._size; k++)
+	{
+		this->_data[k] = value._data[k - i];
+	}
+	_size += value._size;
+	allocationOfCap();
 }
 
 template<typename ValueType>
 void MyVector<ValueType>::popBack()
 {
-	if (this->_data == nullptr)
-		return;
+	if (this->_size==0)
+		throw runtime_error("There is nothing to remove");
+	
 	--_size;
 	allocationOfCap();
 }
@@ -300,7 +308,9 @@ void MyVector<ValueType>::popBack()
 template<typename ValueType>
 void MyVector<ValueType>::erase(const size_t i)
 {
-	assert((i >= 0) && (i <= _size));
+	//assert((i >= 0) && (i <= _size));
+	if ((i < 0) || (i > _size))
+		throw out_of_range("Invalid argument");
 
 	if (i == _size)
 	{
@@ -321,14 +331,16 @@ void MyVector<ValueType>::erase(const size_t i)
 template<typename ValueType>
 void MyVector<ValueType>::erase(const size_t i, const size_t len)
 {
-	assert((i >= 0) && (i <= _size));
+	//assert((i >= 0) && (i <= _size));
+	if ((i < 0) || (i > _size))
+		throw out_of_range("Invalid argument");
 	
-		for (size_t k = i; k < _size - len; k++)
-		{
-			this->_data[k] = this->_data[k + len];
-		}
-		_size -= len;
-		allocationOfCap();
+	for (size_t k = i; k < _size - len; k++)
+	{
+		this->_data[k] = this->_data[k + len];
+	}
+	_size -= len;
+	allocationOfCap();
 }
 
 template<typename ValueType>
@@ -424,8 +436,8 @@ void MyVector<ValueType>::clear()
 	_size = 0;
 }
 
-/*template<typename ValueType>
-MyVector<ValueType> sortedSquares(MyVector& vec, SortedStrategy strategy)
+template<typename ValueType>
+MyVector<ValueType> sortedSquares(MyVector<ValueType>& vec, SortedStrategy strategy)
 {
 	MyVector sort(vec);
 	size_t start = 0;
@@ -463,4 +475,4 @@ MyVector<ValueType> sortedSquares(MyVector& vec, SortedStrategy strategy)
 		}
 	}
 	return sort;
-}*/
+}
